@@ -27,6 +27,8 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
   final confirmPassowrdController = TextEditingController();
   final nameController = TextEditingController();
   final mobileController = TextEditingController();
+  final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _confirmPassowrdFocus = FocusNode();
   bool acceptTerms = false;
   bool submited = false;
   @override
@@ -54,34 +56,20 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
         .of(context)
         .size
         .width;
-    return Scaffold(
-        body: Builder(
-            builder: (BuildContext context) {
-              return ListView(
+    return Scaffold(body: Builder(builder: (BuildContext context) {
+      return  Container(
+          child:Form(
+            key: _signupFormKey,
 
-                  children: <Widget>[
+                  child: SingleChildScrollView(
 
-                Container(
-
-                  child: Form(
-                    key: _signupFormKey,
-                    child: Container(
-                    margin:
-                    EdgeInsets.only(
-                  top: _height * 0.06),
                         child: Column(
+
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            new Container(
-                                width: _width * 0.8,
-                                child: Column(
+                            SizedBox(height:_height * 0.06,),
 
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .stretch,
-                                    children: <Widget>[
                                       new Container(
                                         child: Text(
                                           "Sign Up",
@@ -92,6 +80,8 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                       ),
                                       SizedBox(height: _height*0.04),
                                       new Container(
+                                        width: _width * 0.8,
+                                        alignment: Alignment.centerLeft,
                                         child: Text(
                                           "Name",
                                           style: TextStyle(
@@ -101,7 +91,10 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                         ),
                                       ),
                                       new Container(
-                                          child: TextFormField(
+                                        width: _width * 0.8,
+                                              child:TextFormField(
+                                            textInputAction: TextInputAction.next,
+
                                             controller: nameController,
                                             inputFormatters: [
                                               new FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
@@ -122,6 +115,8 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                           )),
                                       SizedBox(height: _height*0.015),
                                       new Container(
+                                        width: _width * 0.8,
+                                        alignment: Alignment.centerLeft,
                                         child: Text(
                                           "Mobile Phone",
                                           style: TextStyle(
@@ -131,7 +126,10 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                         ),
                                       ),
                                       new Container(
-                                          child: TextFormField(
+                                          width: _width * 0.8,
+
+                                          child:TextFormField(
+                                            textInputAction: TextInputAction.next,
                                             keyboardType: TextInputType.number,
                                             controller: mobileController,
                                             inputFormatters: [
@@ -153,6 +151,8 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                           )),
                                       SizedBox(height: _height*0.015),
                                       new Container(
+                                        width: _width * 0.8,
+                                        alignment: Alignment.centerLeft,
                                         child: Text(
                                           "Email",
                                           style: TextStyle(
@@ -162,7 +162,10 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                         ),
                                       ),
                                       new Container(
-                                          child: TextFormField(
+                                          width: _width * 0.8,
+
+                                          child:TextFormField(
+                                            textInputAction: TextInputAction.next,
                                             controller: emailController,
                                             validator: (value) {
                                               if (value.isEmpty) {
@@ -178,9 +181,12 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                               hintText: 'Your email address',
                                             ),
                                             autofocus: false,
-                                          )),
+                                              )),
                                       SizedBox(height: _height*0.015),
                                       new Container(
+                                        width: _width * 0.8,
+                                        alignment: Alignment.centerLeft,
+
                                         child: Text(
                                           "Password",
                                           style: TextStyle(
@@ -190,7 +196,15 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                         ),
                                       ),
                                       new Container(
-                                          child: TextFormField(
+                                          width: _width * 0.8,
+
+                                          child:TextFormField(
+                                            textInputAction: TextInputAction.next,
+                                            focusNode: _passwordFocus,
+                                            onFieldSubmitted: (term){
+                                              _passwordFocus.unfocus();
+                                              FocusScope.of(context).requestFocus(_confirmPassowrdFocus);
+                                            },
                                             controller: passowrdController,
                                             validator: (value) {
                                               if (value.isEmpty) {
@@ -225,6 +239,9 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                           )),
                                       SizedBox(height: _height*0.01),
                                       new Container(
+                                        width: _width * 0.8,
+
+                                        alignment: Alignment.centerLeft,
                                         child: Text(
                                           "Confirm Password",
                                           style: TextStyle(
@@ -234,8 +251,12 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                         ),
                                       ),
                                       new Container(
-                                          child: TextFormField(
+                                          width: _width * 0.8,
+
+                                          child:TextFormField(
+                                            textInputAction: TextInputAction.done,
                                             controller: confirmPassowrdController,
+                                            focusNode: _confirmPassowrdFocus,
                                             validator: (value) {
                                               if (value.isEmpty) {
                                                 return "* Please enter your Password";
@@ -273,6 +294,7 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                           )),
                                       SizedBox(height: _height*0.01),
                                       new Container(
+                                          width: _width * 0.8,
                                         child: CheckboxListTile(
                                           contentPadding: EdgeInsets.all(0),
                                           value: acceptTerms,
@@ -343,6 +365,7 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                       ),
                                       SizedBox(height: _height*0.05),
                                       new Container(
+                                          width: _width*0.8,
                                           height:_height*0.07,
 
                                           child: RaisedButton(
@@ -356,8 +379,7 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                                 String res=auth.signup(emailController.text, passowrdController.text,nameController.text , mobileController.text);
                                                 if(res==null)
                                                   {
-                                                  Navigator.pop(context);
-                                                  Navigator.push(
+                                                  Navigator.pushReplacement(
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context)
@@ -408,8 +430,7 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                                         fontWeight: FontWeight.bold),
                                                         recognizer: new TapGestureRecognizer()
                                                           ..onTap = () {
-                                                            Navigator.pop(context);
-                                                            Navigator.push(
+                                                            Navigator.pushReplacement(
                                                               context,
                                                               MaterialPageRoute(
                                                                   builder: (
@@ -426,11 +447,9 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                         ),
                                       ),
                                     ]))
-                          ],
-                        )),
+
                   ),
-                ),
-              ]);
+              );
             }));
   }
 }

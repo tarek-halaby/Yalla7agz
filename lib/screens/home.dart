@@ -5,6 +5,7 @@ import 'package:Yalla7agz/screens/home_page.dart';
 import 'package:Yalla7agz/screens/my_requests_page.dart';
 import 'package:Yalla7agz/screens/my_account_page.dart';
 import 'package:Yalla7agz/screens/book_now_page.dart';
+import 'package:Yalla7agz/screens/notifications.dart';
 class Home extends StatelessWidget {
 
   @override
@@ -49,6 +50,12 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
             IconButton(
               icon: Icon(Icons.notifications),
               onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Notifications()
+                    ),
+                );
               },
             )]
       ),

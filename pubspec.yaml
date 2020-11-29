@@ -31,6 +31,8 @@ dependencies:
   shared_preferences: ^0.5.12+4
   font_awesome_flutter: ^8.10.0
   email_validator: ^1.0.6
+  geolocator: ^6.1.8+1
+  geocoder: ^0.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -47,9 +49,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
