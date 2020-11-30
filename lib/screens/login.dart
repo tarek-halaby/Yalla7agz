@@ -45,7 +45,15 @@ class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
-    return Scaffold(body: Builder(builder: (BuildContext context) {
+    return Scaffold(body: GestureDetector(
+        onTap: () {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    },
+    child:Builder(builder: (BuildContext context) {
       return  Container(
         child:SingleChildScrollView(
             child: Column(
@@ -197,7 +205,7 @@ class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
                                                 color: Color(0xFF71A411))),
                                         color: Color(0xFF71A411),
                                         child: Text(
-                                          "Sign In",
+                                          "Log In",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 20,
@@ -209,8 +217,9 @@ class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
                                     margin:
                                         EdgeInsets.only(bottom: _height * 0.03),
                                     child: Center(
-                                        child: RichText(
-                                            text: TextSpan(
+                                        child:
+                                        Text.rich(
+                                            TextSpan(
                                       children: <InlineSpan>[
                                         TextSpan(
                                           text: "Don't have an account? ",
@@ -228,11 +237,9 @@ class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
                                             recognizer:
                                                 new TapGestureRecognizer()
                                                   ..onTap = () {
-                                                    Navigator.pushReplacement(
+                                                    Navigator.pushNamed(
                                                       context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              SignUp()),
+                                                      '/signUp'
                                                     );
                                                   })
                                       ],
@@ -243,7 +250,7 @@ class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
                     ),
                   ))
             ])));
-    }));
+    })));
   }
 
   submitForm() async {
@@ -259,8 +266,8 @@ class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
         Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
+        Navigator.pushNamed(
+            context, '/home');
       } else {
         Scaffold.of(context)
             .showSnackBar(SnackBar(content: Text('Wrong Email or Password')));

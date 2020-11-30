@@ -1,13 +1,17 @@
+import 'package:Yalla7agz/screens/courtDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/models/courts.dart';
 import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class homePage extends StatelessWidget {
   final List<Courts> items=[Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM")
     ,Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),
-    Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),
+    Courts("wafaa wel amal,Nasr City","12:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),
     Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM")];
-
+homePage(this.callBack);
+  final Function callBack;
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
@@ -54,14 +58,7 @@ class homePage extends StatelessWidget {
           ),
           SizedBox(height: _height*0.01,),
 
-          new Container(
-            alignment: Alignment.centerLeft,
-            child: Text("Your location is Nasr City,Cairo,Egypt",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-            ),),
-          ),
+          locationStatefulWidget(),
           SizedBox(height: _height*0.02,),
           CustomPaint(
             size: Size(_width*0.87, _height*0.005),
@@ -72,7 +69,7 @@ class homePage extends StatelessWidget {
             child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
-                return availableCourtsList(place: "${items[index].getPlace()}",time: "${items[index].getFrom()}"+" - "+"${items[index].getTo()}",height: _height*0.08,);}
+                return availableCourtsList(place: "${items[index].getPlace()}",time: "${items[index].getFrom()}"+" - "+"${items[index].getTo()}",);}
             )),
           new Divider(
             color: Colors.black12,
@@ -85,7 +82,7 @@ class homePage extends StatelessWidget {
                child:RaisedButton(
 
             onPressed: () {
-
+              callBack();
             },
             shape: RoundedRectangleBorder(
                 borderRadius:
@@ -112,44 +109,96 @@ class availableCourtsList extends StatelessWidget {
   availableCourtsList({
     this.place,
     this.time,
-    this.height,
   });
 
   final String place;
   final String time;
-  final double height;
 
   @override
   Widget build(BuildContext context) {
       return Container(
-        height: height,
         child:Card(
 
         elevation: 1,
-        child: Padding(
-          padding: EdgeInsets.all(5),
-          child: InkWell(
-          onTap: (){},
+        child: InkWell(
+            onTap: (){
+              Navigator.pushNamed(
+                  context,
+                  '/courtDetails');
+            },
+          child: Padding(
+              padding: EdgeInsets.all(5),
         child:Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              flex: 5,
-              child: Text(place),
+              flex: 4,
+              child: Center(child:Text(place)),
             ),
             Expanded(
-              flex: 2,
-              child: Container(),
-            ),
-            Expanded(
-                flex: 4,
-                child: Text(time)
+                flex: 5,
+                child: Center(child:Text(time))
             ),
 
 
           ],
         ))),
       ));
+  }
+}
+class locationStatefulWidget extends StatefulWidget {
+  locationStatefulWidget({Key key}) : super(key: key);
+
+  @override
+  locationStatefulWidgetState createState() => locationStatefulWidgetState();
+}
+class locationStatefulWidgetState extends State<locationStatefulWidget> {
+  @override
+  Future<String> getLocationText() async {
+    return getLocation();
+  }
+  Future<String> getLocation ()async
+  {
+    Geolocator.checkPermission().then((status) { print('status: $status'); });
+    try {
+      Position newPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      List<Placemark> placemarks = await placemarkFromCoordinates(newPosition.latitude, newPosition.longitude);
+
+      var first = placemarks.first;
+
+       return "${first.country}, ${first.administrativeArea}, ${first.street}";
+
+
+    } catch (e) {
+      return "N/A";
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+    future: getLocationText(),
+    builder: (BuildContext context, AsyncSnapshot<String> text) {
+      switch (text.connectionState) {
+        case ConnectionState.waiting:
+          return new Container(
+            alignment: Alignment.centerLeft,
+            child : Text("getting your location ..........",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+              ),),
+          );
+        default:
+          return new Container(
+            alignment: Alignment.centerLeft,
+            child : Text(text.data,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+              ),),
+          );
+      }
+  });
   }
 }

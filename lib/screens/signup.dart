@@ -19,6 +19,7 @@ class SignUpStatefulWidget extends StatefulWidget {
   SignUpStatefulWidgetState createState() => SignUpStatefulWidgetState();
 }
 class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
+
   bool _passwordVisible;
   bool _passwordVisible2;
   final _signupFormKey = GlobalKey<FormState>();
@@ -29,10 +30,17 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
   final mobileController = TextEditingController();
   final FocusNode _passwordFocus = FocusNode();
   final FocusNode _confirmPassowrdFocus = FocusNode();
+  final terms= TapGestureRecognizer();
+  final policy= TapGestureRecognizer();
   bool acceptTerms = false;
+  bool isTermsAccepted = false;
   bool submited = false;
   @override
   void dispose() {
+    terms.dispose();
+    policy.dispose();
+    _passwordFocus.dispose();
+    _confirmPassowrdFocus.dispose();
     emailController.dispose();
     passowrdController.dispose();
     confirmPassowrdController.dispose();
@@ -56,7 +64,15 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
         .of(context)
         .size
         .width;
-    return Scaffold(body: Builder(builder: (BuildContext context) {
+    return Scaffold(body:GestureDetector(
+        onTap: () {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+    },
+    child:Builder(builder: (BuildContext context) {
       return  Container(
           child:Form(
             key: _signupFormKey,
@@ -295,20 +311,18 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                       SizedBox(height: _height*0.01),
                                       new Container(
                                           width: _width * 0.8,
-                                        child: CheckboxListTile(
-                                          contentPadding: EdgeInsets.all(0),
-                                          value: acceptTerms,
-                                          onChanged: (val) {
-                                            setState(() => acceptTerms = val);
-                                                },
-                                          subtitle: !acceptTerms && submited
-                                              ? Text(
-                                            '* Please accept terms and conditions.',
-
-                                            style: TextStyle(color: Colors.red),
-                                          )
-                                              : null,
-                                          title: new RichText(
+                                        child: ListTile(
+                                            leading: Checkbox(
+                                              value: acceptTerms,
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  acceptTerms = val;
+                                                });
+                                              },
+                                              activeColor: Color(0xFF71A411),
+                                            ),
+                                            contentPadding: EdgeInsets.all(0),
+                                            title: new RichText(
 
                                               text: TextSpan(
                                                 children:<InlineSpan>[
@@ -316,52 +330,47 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                                     text: "I agree to the ",
                                                     style: TextStyle(
                                                         color: Colors.black),
+                                                    children: <InlineSpan>[
+                                                      TextSpan(
+                                                          text: "Terms of Services",
+                                                          style: TextStyle(
+                                                              color: Color(0xFF71A411)),
+                                                          recognizer: terms
+                                                            ..onTap = () {
+                                                              print('terms');
+                                                            }
+                                                      ),
+                                                    ]
                                                   ),
-                                                  TextSpan(
-                                                      text: "Terms of Services",
-                                                      style: TextStyle(
-                                                          color: Color(0xFF71A411)),
-                                                      recognizer: new TapGestureRecognizer()
-                                                        ..onTap = () {
-//                                                          Navigator.pop(context);
-//                                                          Navigator.push(
-//                                                            context,
-//                                                            MaterialPageRoute(
-//                                                                builder: (
-//                                                                    context) =>
-//                                                                    Login()),
-//                                                          );
-                                                        }
-                                                  ),
+
                                                   TextSpan(
                                                     text: " and ",
                                                     style: TextStyle(
                                                         color: Colors.black),
+                                                    children: <InlineSpan>[
+                                                      TextSpan(
+                                                          text: "Privacy Policy",
+                                                          style: TextStyle(
+                                                              color: Color(0xFF71A411)),
+                                                          recognizer: policy
+                                                            ..onTap = () {
+                                                              print('policy');
+                                                            }
+                                                      ),
+                                                    ]
                                                   ),
-                                                  TextSpan(
-                                                      text: "Privacy Policy",
-                                                      style: TextStyle(
-                                                          color: Color(0xFF71A411)),
-                                                      recognizer: new TapGestureRecognizer()
-                                                        ..onTap = () {
-//                                                          Navigator.pop(context);
-//                                                          Navigator.push(
-//                                                            context,
-//                                                            MaterialPageRoute(
-//                                                                builder: (
-//                                                                    context) =>
-//                                                                    Login()),
-//                                                          );
-                                                        }
-                                                  ),
+
                                                 ],
 
 
                                               )
                                           ),
-                                          controlAffinity: ListTileControlAffinity.leading,
-                                          activeColor: Color(0xFF71A411),
+                                          
                                         )
+                                      ),
+                                      new Visibility(child: Text('* Please accept terms and conditions.',
+                                      style: TextStyle(color: Colors.red),),
+                                      visible: isTermsAccepted,
                                       ),
                                       SizedBox(height: _height*0.05),
                                       new Container(
@@ -373,18 +382,26 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                               setState(() {
                                                 submited=true;
                                               });
+                                              if (!acceptTerms){
+                                                setState(() {
+                                                  isTermsAccepted=true;
+                                                });
+                                              }
+                                              else{
+                                                setState(() {
+                                                  isTermsAccepted=false;
+                                                });
+
+                                              }
                                               if (_signupFormKey.currentState
                                                   .validate()&&acceptTerms) {
                                                 Auth auth = new Auth.sigingUp();
                                                 String res=auth.signup(emailController.text, passowrdController.text,nameController.text , mobileController.text);
                                                 if(res==null)
                                                   {
-                                                  Navigator.pushReplacement(
+                                                  Navigator.pushReplacementNamed(
                                                       context,
-                                                      MaterialPageRoute(
-                                                          builder: (context)
-                                                          =>Login()
-                                                      ));
+                                                      '/login');
                                                   }
                                                 else
                                                   {
@@ -430,12 +447,9 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                                         fontWeight: FontWeight.bold),
                                                         recognizer: new TapGestureRecognizer()
                                                           ..onTap = () {
-                                                            Navigator.pushReplacement(
+                                                            Navigator.pushReplacementNamed(
                                                               context,
-                                                              MaterialPageRoute(
-                                                                  builder: (
-                                                                      context) =>
-                                                                      Login()),
+                                                              '/login'
                                                             );
                                                           }
                                                     )
@@ -450,6 +464,6 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
 
                   ),
               );
-            }));
+            })));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:Yalla7agz/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/screens/login.dart';
 import 'package:Yalla7agz/models/user.dart';
@@ -6,6 +7,8 @@ import 'package:Yalla7agz/screens/my_requests_page.dart';
 import 'package:Yalla7agz/screens/my_account_page.dart';
 import 'package:Yalla7agz/screens/book_now_page.dart';
 import 'package:Yalla7agz/screens/notifications.dart';
+import 'package:Yalla7agz/models/notification.dart';
+
 class Home extends StatelessWidget {
 
   @override
@@ -21,18 +24,35 @@ class HomeStatefulWidget extends StatefulWidget {
 }
 class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
   int _selectedIndex = 0;
+  notificationController cont=new notificationController();
+
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _widgetOptions = <Widget>[
-    homePage(),
-    bookNowPage(),
-    myRequests(),
-    myAccount(),
-  ];
 
+  Widget body() {
+    switch(_selectedIndex) {
+      case 0:
+        return homePage(showMoreButton);
+        break;
+      case 1:
+        return bookNowPage();
+        break;
+      case 2:
+        return myRequests();
+        break;
+      case 3:
+        return myAccount();
+        break;
+    }
+  }
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+  void showMoreButton() {
+    setState(() {
+      _selectedIndex = 1;
     });
   }
   @override
@@ -48,19 +68,27 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
                   style: TextStyle(color: Colors.white, fontSize: 25))),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.notifications),
+              icon:  new Stack(
+                  children: <Widget>[
+                    new Icon(Icons.notifications),
+                    new Positioned(  // draw a red marble
+                      top: 0.0,
+                      right: 0.0,
+                      child: new Icon(Icons.brightness_1, size: 8.0,
+                          color: Colors.redAccent),
+                    )
+                  ]
+              ),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushNamed(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => Notifications()
-                    ),
+                    '/notification'
                 );
               },
             )]
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: body(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

@@ -1,6 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/notification_controller.dart';
+
 
 class Notifications extends StatelessWidget{
   @override
@@ -16,13 +19,16 @@ class Notifications extends StatelessWidget{
           automaticallyImplyLeading: false,
           leading: Container(
           ),
-          title: Center(
-            child: Text("Yalla 7agz",)
-          ),
+          title:  Center(
+              child: Text("Yalla 7agz",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white, fontSize: 25))),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
+                notificationController cont=new notificationController();
+                cont.allSeen();
                 Navigator.pop(context);
               },
             )]
@@ -50,8 +56,9 @@ class Notifications extends StatelessWidget{
             new Flexible(
 
                 child: ListView.builder(
-                    itemCount: 50,
+                    itemCount: notifications.length,
                     itemBuilder: (context, index) {
+                      return notificationsList(title: notifications[index].getTitle(),messege:notifications[index].getMessege(),seen:notifications[index].getSeen());
                       }
                 ))
       ])),
@@ -61,46 +68,61 @@ class Notifications extends StatelessWidget{
 }
 class notificationsList extends StatelessWidget {
   notificationsList({
-    this.place,
-    this.time,
-    this.response,
+    this.title,
+    this.messege,
+    this.seen,
   });
 
-   String place;
-   String time;
-   Widget response;
+   String title;
+   String messege;
+   bool seen;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-
-      Padding(
+    return Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0),
-        child:Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-          children: <Widget>[
-            Expanded(
-              flex: 4,
-              child: Text(place),
-            ),
-            Expanded(
-                flex: 4,
-                child: Text(time)
-            ),
-            Expanded(
-              flex: 2,
-              child: response,
-            )
-          ],
+        child:Column(children: [
+        new Container(
+          alignment: Alignment.centerLeft,
+          child: Text(title,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 15),),
         ),
+        new Container(
+            child:Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+              children: <Widget>[
+                Expanded(
+                  flex: 9,
+                  child: Text(messege,style: TextStyle(color: Colors.black,fontSize: 13),),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: seen?Container():Center(child:CustomPaint(painter: seenPoint())),
+                )
+              ],
+            ),
+
 
       ),
       new Divider(
         color: Colors.black12,
         thickness: 1,
       )
-    ],);
+    ],));
   }
+}
+class seenPoint extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint1 = Paint()
+      ..color = Colors.red
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 10;
+    var points = [Offset(0,0)];
+    canvas.drawPoints(PointMode.points, points, paint1);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
