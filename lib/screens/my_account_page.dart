@@ -9,7 +9,7 @@ class myAccount extends StatelessWidget {
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
   double _width = MediaQuery.of(context).size.width;
-  User loggedUser=User(0,'admin@miu.com','admin','Ahmed','Mohamed','01158963214');
+  User loggedUser=User(2,'client@miu.com','client','omar','ahmed','01178546854',true);
     return  Container(
       alignment: Alignment.center,
         width: _width*0.87,

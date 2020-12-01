@@ -1,5 +1,5 @@
-import 'package:Yalla7agz/screens/booked.dart';
-import 'package:Yalla7agz/screens/notifications.dart';
+import 'file:///F:/grad/Yalla7agz/lib/screens/client_screens/booked.dart';
+import 'package:Yalla7agz/screens/client_screens/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/shared/painted_line.dart';
 

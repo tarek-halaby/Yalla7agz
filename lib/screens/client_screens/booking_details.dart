@@ -286,6 +286,26 @@ class bookingDetails extends StatelessWidget {
                       ),
                     ),
                   ]),
+                  new Divider(
+                    color: Colors.black12,
+                    thickness: 1,
+                  ),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+
+                      child:Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child:Center(
+                            child: Text("Cancel Request",style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,color: Colors.red),),
+                          ))
+
+                  ),
+                  new Divider(
+                    color: Colors.black12,
+                    thickness: 1,
+                  ),
                   Expanded(
                       child: Align(
                           alignment: FractionalOffset.bottomCenter,
@@ -294,9 +314,7 @@ class bookingDetails extends StatelessWidget {
                               alignment: Alignment.bottomCenter,
                               child: RaisedButton(
                                 onPressed: () {
-                                  int count = 0;
-                                  Navigator.popUntil(
-                                      context, ModalRoute.withName('/'));
+                                  Navigator.pop(context);
                                 },
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),

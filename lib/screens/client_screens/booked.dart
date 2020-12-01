@@ -1,4 +1,4 @@
-import 'package:Yalla7agz/screens/notifications.dart';
+import 'package:Yalla7agz/screens/client_screens/notifications.dart';
 import 'package:Yalla7agz/shared/painted_line.dart';
 import 'package:flutter/material.dart';
 
@@ -15,8 +15,7 @@ class booked extends StatelessWidget {
                 child:IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
-                    int count = 0;
-                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                 )
             ),
@@ -125,8 +124,7 @@ class booked extends StatelessWidget {
                       height: _height * 0.07,
                       child: RaisedButton(
                         onPressed: () {
-                          int count = 0;
-                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                          Navigator.of(context).popUntil((route) => route.isFirst);
                           },
                         shape: RoundedRectangleBorder(
                             borderRadius:

@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/screens/signup.dart';
-import 'package:Yalla7agz/auth.dart';
-import 'package:Yalla7agz/screens/home.dart';
+import 'package:Yalla7agz/controllers/auth.dart';
+import 'package:Yalla7agz/screens/client_screens/home.dart';
 import 'package:Yalla7agz/shared/loading_indicator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:email_validator/email_validator.dart';
@@ -26,8 +26,8 @@ class LoginStatefulWidget extends StatefulWidget {
 class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
   bool _passwordVisible;
   final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController(text: "admin@miu.com");
-  final passowrdController = TextEditingController(text: "admin");
+  final emailController = TextEditingController(text: "client@miu.com");
+  final passowrdController = TextEditingController(text: "client");
 
   @override
   void dispose() {
@@ -262,13 +262,24 @@ class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
 
       Auth auth = new Auth(emailController.text, passowrdController.text);
 
-      if (auth.login()) {
+      if (auth.login()==1) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
+        await prefs.setBool('isClient', true);
         Navigator.pop(context);
         Navigator.pushNamed(
             context, '/home');
-      } else {
+      }
+      else if(auth.login()==2)
+      {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        await prefs.setBool('isClient', false);
+        Navigator.pop(context);
+        Navigator.pushNamed(
+            context, '/adminHome');
+      }
+      else {
         Scaffold.of(context)
             .showSnackBar(SnackBar(content: Text('Wrong Email or Password')));
       }

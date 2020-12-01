@@ -1,8 +1,8 @@
 import 'package:Yalla7agz/models/courts.dart';
-import 'package:Yalla7agz/screens/notifications.dart';
+import 'package:Yalla7agz/screens/client_screens/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/shared/painted_line.dart';
-import 'package:Yalla7agz/screens/booking.dart';
+import 'file:///F:/grad/Yalla7agz/lib/screens/client_screens/booking.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 

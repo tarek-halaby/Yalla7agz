@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Yalla7agz/screens/login.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:Yalla7agz/auth.dart';
+import 'package:Yalla7agz/controllers/auth.dart';
 
 class SignUp extends StatelessWidget {
   @override

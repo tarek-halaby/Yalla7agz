@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/shared/painted_line.dart';
 import 'package:Yalla7agz/models/courts.dart';
-import 'package:Yalla7agz/screens/booking.dart';
-import 'package:Yalla7agz/screens/courtDetails.dart';
+import 'file:///F:/grad/Yalla7agz/lib/screens/client_screens/booking.dart';
+import 'file:///F:/grad/Yalla7agz/lib/screens/client_screens/courtDetails.dart';
 
 class bookNowPage extends StatelessWidget {
   final List<Courts> items=[Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM"),Courts("wafaa wel amal,Nasr City","7:00 PM","8:00 PM")

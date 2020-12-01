@@ -1,12 +1,12 @@
-import 'package:Yalla7agz/notification_controller.dart';
+import 'file:///F:/grad/Yalla7agz/lib/controllers/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/screens/login.dart';
 import 'package:Yalla7agz/models/user.dart';
-import 'package:Yalla7agz/screens/home_page.dart';
-import 'package:Yalla7agz/screens/my_requests_page.dart';
-import 'package:Yalla7agz/screens/my_account_page.dart';
-import 'package:Yalla7agz/screens/book_now_page.dart';
-import 'package:Yalla7agz/screens/notifications.dart';
+import 'package:Yalla7agz/screens/client_screens/home_page.dart';
+import 'package:Yalla7agz/screens/client_screens/my_requests_page.dart';
+import 'file:///F:/grad/Yalla7agz/lib/screens/my_account_page.dart';
+import 'file:///F:/grad/Yalla7agz/lib/screens/client_screens/book_now_page.dart';
+import 'package:Yalla7agz/screens/client_screens/notifications.dart';
 import 'package:Yalla7agz/models/notification.dart';
 
 class Home extends StatelessWidget {
