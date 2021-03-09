@@ -1,5 +1,10 @@
-import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/models/http_exception.dart';
+import 'package:Yalla7agz/providers/auth.dart';
+import 'package:Yalla7agz/widgets/loading_indicator.dart';
+import 'package:Yalla7agz/widgets/message_widget.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class changePassword extends StatefulWidget {
   changePassword({Key key}) : super(key: key);
@@ -271,9 +276,23 @@ class _changePasswordState extends State<changePassword> {
                                 thickness: 1,
                               ),
                               InkWell(
-                                  onTap: () {
+                                  onTap: ()async {
                                     if (_editProfileFormKey.currentState.validate()) {
-                                      Navigator.pop(context);
+                                      try {
+                                        DialogBuilder(context).showLoadingIndicator('Loading');
+                                        await Provider.of<Auth>(context, listen: false).changePassword(
+                                            oldPassowrdController.text,
+                                          newPassowrdController.text
+                                        ).whenComplete(() {
+                                          DialogBuilder(context).hideOpenDialog();});
+                                        Navigator.pop(context);
+                                      } on HttpException catch (error) {
+                                        var errorMessage = error.toString();
+                                        if (error.toString().contains('EMAIL_NOT_FOUND')) {
+                                          errorMessage = 'This email address is not found.';
+                                        }
+                                        MessageBoxModal(context).showMessageBoxModal(errorMessage);
+                                      }
                                     }
                                   },
                                   child: Padding(

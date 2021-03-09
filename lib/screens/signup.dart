@@ -1,10 +1,14 @@
+import 'package:Yalla7agz/models/user.dart';
+import 'package:Yalla7agz/widgets/loading_indicator.dart';
+import 'package:Yalla7agz/widgets/message_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Yalla7agz/screens/login.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:Yalla7agz/controllers/auth.dart';
-
+import 'package:provider/provider.dart';
+import 'package:Yalla7agz/models/http_exception.dart';
+import 'package:Yalla7agz/providers/auth.dart';
 class SignUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -23,17 +27,18 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
   bool _passwordVisible;
   bool _passwordVisible2;
   final _signupFormKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passowrdController = TextEditingController();
-  final confirmPassowrdController = TextEditingController();
-  final nameController = TextEditingController();
-  final mobileController = TextEditingController();
+  final emailController = TextEditingController(text: "client@miu.com");
+  final passowrdController = TextEditingController(text:"12345678");
+  final confirmPassowrdController = TextEditingController(text:"12345678");
+  final nameController = TextEditingController(text:"tarek");
+  final mobileController = TextEditingController(text:"01125663532");
   final FocusNode _passwordFocus = FocusNode();
   final FocusNode _confirmPassowrdFocus = FocusNode();
   final terms= TapGestureRecognizer();
   final policy= TapGestureRecognizer();
-  bool acceptTerms = false;
+  bool acceptTerms = true;
   bool isTermsAccepted = false;
+  bool isSwitched = true;
   bool submited = false;
   @override
   void dispose() {
@@ -95,6 +100,37 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                         ),
                                       ),
                                       SizedBox(height: _height*0.04),
+                                      new Container(
+                                        width: _width*0.8,
+                                        child: Row(
+                                          children: [
+                                            new Container(
+                                              width:_width*0.5,
+                                              child: Text(
+                                                "Client",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                            SizedBox(width: _width*0.1,),
+                                            new Container(
+                                              width: _width*0.2,
+                                            child:Switch(
+                                              value: isSwitched,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  isSwitched = value;
+                                                  print(isSwitched);
+                                                });
+                                              },
+                                              activeTrackColor: Colors.lightGreenAccent,
+                                              activeColor: Colors.green,
+                                            ),)
+                                          ],
+                                        ),
+                                      ),
                                       new Container(
                                         width: _width * 0.8,
                                         alignment: Alignment.centerLeft,
@@ -395,19 +431,28 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                               }
                                               if (_signupFormKey.currentState
                                                   .validate()&&acceptTerms) {
-                                                Auth auth = new Auth.sigingUp();
-                                                String res=auth.signup(emailController.text, passowrdController.text,nameController.text , mobileController.text);
-                                                if(res==null)
-                                                  {
-                                                  Navigator.pushReplacementNamed(
-                                                      context,
-                                                      '/login');
+                                                try {
+                                                  DialogBuilder(context).showLoadingIndicator('Loading');
+                                                  await Provider.of<Auth>(context, listen: false).signup(
+                                                      emailController.text, passowrdController.text ,nameController.text ,mobileController.text,isSwitched
+                                                  ).whenComplete(() {
+                                                  DialogBuilder(context).hideOpenDialog();});
+                                                  Navigator.pop(context);
+                                                } on HttpException catch (error) {
+                                                  var errorMessage = 'Authentication failed';
+                                                  if (error.toString().contains('EMAIL_EXISTS')) {
+                                                    errorMessage = 'This email address is already in use.';
+                                                  } else if (error.toString().contains('INVALID_EMAIL')) {
+                                                    errorMessage = 'This is not a valid email address';
+                                                  } else if (error.toString().contains('WEAK_PASSWORD')) {
+                                                    errorMessage = 'This password is too weak.';
+                                                  } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+                                                    errorMessage = 'Could not find a user with that email.';
+                                                  } else if (error.toString().contains('INVALID_PASSWORD')) {
+                                                    errorMessage = 'Invalid password.';
                                                   }
-                                                else
-                                                  {
-                                                    Scaffold .of(context) .showSnackBar(
-                                                        SnackBar(content: Text(res)));
-                                                  }
+                                                  MessageBoxModal(context).showMessageBoxModal(errorMessage);
+                                                 }
                                               }
                                             },
                                             shape: RoundedRectangleBorder(
@@ -447,9 +492,8 @@ class SignUpStatefulWidgetState extends State<SignUpStatefulWidget> {
                                                         fontWeight: FontWeight.bold),
                                                         recognizer: new TapGestureRecognizer()
                                                           ..onTap = () {
-                                                            Navigator.pushReplacementNamed(
+                                                            Navigator.pop(
                                                               context,
-                                                              '/login'
                                                             );
                                                           }
                                                     )

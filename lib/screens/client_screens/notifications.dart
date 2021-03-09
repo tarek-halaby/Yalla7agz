@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:Yalla7agz/shared/painted_line.dart';
-import 'file:///F:/grad/Yalla7agz/lib/controllers/notification_controller.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
+import 'package:Yalla7agz/controllers/notification_controller.dart';
 
 
 class Notifications extends StatelessWidget{

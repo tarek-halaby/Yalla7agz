@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
 
 class adminNotifications extends StatelessWidget{
   @override

@@ -1,7 +1,7 @@
-import 'file:///F:/grad/Yalla7agz/lib/screens/client_screens/booked.dart';
+import 'package:Yalla7agz/screens/client_screens/booked.dart';
 import 'package:Yalla7agz/screens/client_screens/notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
 
 class bookingStatefulWidget extends StatefulWidget {
   bookingStatefulWidget({Key key}) : super(key: key);

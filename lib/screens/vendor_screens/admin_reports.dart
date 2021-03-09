@@ -1,4 +1,4 @@
-import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:flutter/material.dart';
 
 class adminReports extends StatelessWidget {

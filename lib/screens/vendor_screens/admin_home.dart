@@ -1,4 +1,4 @@
-import 'file:///F:/grad/Yalla7agz/lib/screens/my_account_page.dart';
+import 'package:Yalla7agz/screens/my_account_page.dart';
 import 'package:Yalla7agz/screens/vendor_screens/admin_home_page.dart';
 import 'package:Yalla7agz/screens/vendor_screens/admin_reports.dart';
 import 'package:Yalla7agz/screens/vendor_screens/admin_requests.dart';

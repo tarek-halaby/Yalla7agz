@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:Yalla7agz/shared/painted_line.dart';
-import 'package:Yalla7agz/models/courts.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
+import 'package:Yalla7agz/models/court.dart';
 
 class myRequests extends StatelessWidget {
   final List<Courts> items = [

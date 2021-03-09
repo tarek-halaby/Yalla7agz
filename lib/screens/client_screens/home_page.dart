@@ -1,7 +1,7 @@
-import 'file:///F:/grad/Yalla7agz/lib/screens/client_screens/courtDetails.dart';
+import 'package:Yalla7agz/screens/client_screens/courtDetails.dart';
 import 'package:flutter/material.dart';
-import 'package:Yalla7agz/models/courts.dart';
-import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/models/court.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 

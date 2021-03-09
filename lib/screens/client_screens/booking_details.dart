@@ -1,6 +1,7 @@
-import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:map_launcher/map_launcher.dart';
+
 class bookingDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -130,8 +131,9 @@ class bookingDetails extends StatelessWidget {
                                 child: Icon(
                                   Icons.location_on,
                                 )),
-                            onTap: () async{
-                              final availableMaps = await MapLauncher.installedMaps;
+                            onTap: () async {
+                              final availableMaps =
+                                  await MapLauncher.installedMaps;
                               await availableMaps.first.showMarker(
                                 coords: Coords(30.169846, 31.490351),
                                 title: "Ocean Beach",
@@ -294,14 +296,17 @@ class bookingDetails extends StatelessWidget {
                       onTap: () {
                         Navigator.pop(context);
                       },
-
-                      child:Padding(
+                      child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5.0),
-                          child:Center(
-                            child: Text("Cancel Request",style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,color: Colors.red),),
-                          ))
-
-                  ),
+                          child: Center(
+                            child: Text(
+                              "Cancel Request",
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            ),
+                          ))),
                   new Divider(
                     color: Colors.black12,
                     thickness: 1,

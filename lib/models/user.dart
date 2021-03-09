@@ -1,19 +1,21 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 class User {
   int _id;
   String _email;
   String _password;
   String _mobileNumber;
-  String _firstName;
-  String _lastName;
+  String _Name;
   bool _isClient;
-  User(id,email,password,fname,lname,mobilePhone,isClient)
+  User(email,password,{name=null,mobilePhone=null,isClient=null})
   {
     _isClient=isClient;
-    id=_id;
     _email=email;
     _password=password;
-    _firstName=fname;
-    _lastName=lname;
+    _Name=name;
     _mobileNumber=mobilePhone;
   }
   bool getIsClient()
@@ -22,7 +24,7 @@ class User {
   }
   String getName()
   {
-    return _firstName+_lastName;
+    return _Name;
   }
   String getEmail()
   {
@@ -35,5 +37,13 @@ class User {
   String getMobileNumber()
   {
     return _mobileNumber;
+  }
+  String toJson(){
+    return json.encode({
+      'email': this._email,
+      'mobile_number': this._mobileNumber,
+      'name': this._Name,
+      'isClient': this._isClient,
+    });
   }
 }

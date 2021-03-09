@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:Yalla7agz/shared/painted_line.dart';
-import 'package:Yalla7agz/models/courts.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
+import 'package:Yalla7agz/models/court.dart';
 final List<String> response = ["Pending", "Cancelled", "Approved"];
 final List<Color> responseColor = [
   Colors.blueAccent,

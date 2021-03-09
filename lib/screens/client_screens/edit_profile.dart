@@ -1,6 +1,10 @@
-import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/providers/users.dart';
+import 'package:Yalla7agz/widgets/loading_indicator.dart';
+import 'package:Yalla7agz/widgets/message_widget.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class editProfile extends StatefulWidget {
   editProfile({Key key}) : super(key: key);
@@ -11,8 +15,8 @@ class editProfile extends StatefulWidget {
 
 class _editProfileState extends State<editProfile> {
   final _editProfileFormKey = GlobalKey<FormState>();
-  final nameController = TextEditingController(text:"Ahmed");
-  final mobileController = TextEditingController(text:"01158963214");
+  final nameController = TextEditingController();
+  final mobileController = TextEditingController();
   @override
   void dispose() {
     super.dispose();
@@ -22,6 +26,12 @@ class _editProfileState extends State<editProfile> {
   }
   @override
   Widget build(BuildContext context) {
+    final loadedUser = Provider.of<Users>(
+      context,
+      listen: false,
+    ).user;
+    nameController.text=loadedUser.getName();
+    mobileController.text=loadedUser.getMobileNumber();
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -161,9 +171,21 @@ class _editProfileState extends State<editProfile> {
                         thickness: 1,
                       ),
                       InkWell(
-                          onTap: () {
+                          onTap: () async{
                             if (_editProfileFormKey.currentState.validate()) {
-                              Navigator.pop(context);
+                              DialogBuilder(context).showLoadingIndicator('Loading');
+                              await Provider.of<Users>(context, listen: false)
+                                  .updateProfile(
+                                nameController.text,
+                                mobileController.text,
+                              ).whenComplete(() async{
+                                await Provider.of<Users>(context,listen: false).getUser();
+                                DialogBuilder(context).hideOpenDialog();
+                                Navigator.pop(context);
+                              }).catchError((error) {
+                                var errorMessage = 'Update Failed';
+                                MessageBoxModal(context).showMessageBoxModal(errorMessage);
+                              });
                             }
                           },
                           child: Padding(

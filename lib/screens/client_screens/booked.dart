@@ -1,5 +1,5 @@
 import 'package:Yalla7agz/screens/client_screens/notifications.dart';
-import 'package:Yalla7agz/shared/painted_line.dart';
+import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:flutter/material.dart';
 
 class booked extends StatelessWidget {
