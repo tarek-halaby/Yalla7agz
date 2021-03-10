@@ -1,4 +1,5 @@
 import 'package:Yalla7agz/providers/arenas.dart';
+import 'package:Yalla7agz/providers/requests.dart';
 import 'package:Yalla7agz/providers/users.dart';
 import 'package:Yalla7agz/screens/client_screens/booked.dart';
 import 'package:Yalla7agz/screens/client_screens/booking.dart';
@@ -50,6 +51,12 @@ class MyApp extends StatelessWidget {
                 Provider.of<Auth>(context, listen: false).userId),
             update: (ctx, auth, arena) =>
             arena..receiveToken(auth),
+          ),
+          ChangeNotifierProxyProvider<Auth, Requests>(
+            create: (_) => Requests(Provider.of<Auth>(context, listen: false).token,
+                Provider.of<Auth>(context, listen: false).userId),
+            update: (ctx, auth, request) =>
+            request..receiveToken(auth),
           ),
         ],
         child: Consumer<Auth>(

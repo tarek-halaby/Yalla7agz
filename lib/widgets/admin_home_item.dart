@@ -92,7 +92,7 @@ class AdminHomeItem extends StatelessWidget{
                               return HomeList(
                                 time: "${calendar[index]}",
                                 reserver: "${reservers[index]}",
-                                place: "Court : ${this.arena.courts.length}",
+                                place: "Court : ${this.arena.courts[index].number}",
                               );
                             },
                         )

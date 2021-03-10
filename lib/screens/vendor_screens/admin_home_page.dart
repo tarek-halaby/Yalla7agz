@@ -20,7 +20,7 @@ class adminHomePageState extends State<adminHomePage>{
    _refreshArenas(BuildContext context) async {
     List<Widget> itemsList = new List<Widget>();
 
-    await Provider.of<Arenas>(context,listen: false).getArenas();
+    await Provider.of<Arenas>(context,listen: false).getArenas(true);
     this._arenas=await Provider.of<Arenas>(context,listen: false).arenas;
     for (var i = 0; i < _arenas.length; i++) {
     await Provider.of<Arenas>(context,listen: false).getCourts(this._arenas[i].id);

@@ -1,34 +1,39 @@
+import 'package:Yalla7agz/models/arena.dart';
+import 'package:Yalla7agz/models/request.dart';
+import 'package:Yalla7agz/providers/arenas.dart';
+import 'package:Yalla7agz/providers/requests.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:Yalla7agz/models/court.dart';
+import 'package:provider/provider.dart';
 
 class myRequests extends StatelessWidget {
-  final List<Courts> items = [
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "12:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM"),
-    Courts("wafaa wel amal,Nasr City", "7:00 PM", "8:00 PM")
-  ];
-  final List<String> response = ["Pending", "Cancelled", "Approved"];
-  final List<Color> responseColor = [
-    Colors.blueAccent,
-    Colors.black,
-    Colors.green
-  ];
+  List<Request> _requests = new List<Request>();
+  List<Arena> _arenas = new List<Arena>();
+
+  _refreshRequests(BuildContext context) async {
+    await Provider.of<Requests>(context, listen: false).getRequests();
+    await Provider.of<Arenas>(context, listen: false).getArenas(false);
+      this._arenas = await Provider.of<Arenas>(context, listen: false).arenas;
+    this._requests = await Provider.of<Requests>(context, listen: false).requests;
+  }
 
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
-    return Container(
+    return FutureBuilder<Object>(
+        future: _refreshRequests(context),
+    builder: (context, snapshot) {
+    return snapshot.connectionState == ConnectionState.waiting
+    ? Center(
+    child: CircularProgressIndicator(),
+    )
+        : RefreshIndicator(
+    onRefresh: () => _refreshRequests(context),
+    child: Consumer<Requests>(
+    builder: (context, arenaData, child) =>
+    Container(
         width: _width * 0.87,
         margin: EdgeInsets.only(top: _height * 0.04, bottom: _height * 0.03),
         child: Column(children: <Widget>[
@@ -51,24 +56,26 @@ class myRequests extends StatelessWidget {
           ),
           new Flexible(
               child: ListView.builder(
-                  itemCount: items.length,
+                  itemCount: this._requests.length,
                   itemBuilder: (context, index) {
                     return requestsList(
-                      place: "${items[index].getPlace()}",
-                      time: "${items[index].getFrom()}" +
+                      arena:_arenas[_arenas.indexWhere((arena) => arena.id == _requests[index].userBooking.arenaId)] ,
+                      request:_requests[index],
+                      place:_arenas[_arenas.indexWhere((arena) => arena.id == _requests[index].userBooking.arenaId)].name,
+                      time: "${_requests[index].userBooking.from}" +
                           " - " +
-                          "${items[index].getTo()}",
+                          "${_requests[index].userBooking.to}",
                       response: Text(
-                        "${response[index % 3]}",
+                        "${_requests[index].status}",
                         style: TextStyle(
                           fontSize: 13,
-                          color: responseColor[index % 3],
                         ),
                       ),
                     );
                   }))
-        ]));
-  }
+        ]))));
+  });
+}
 }
 
 class requestsList extends StatelessWidget {
@@ -76,8 +83,12 @@ class requestsList extends StatelessWidget {
     this.place,
     this.time,
     this.response,
+    this.request,
+    this.arena,
   });
 
+  final Request request;
+  final Arena arena;
   final String place;
   final String time;
   final Widget response;
@@ -88,7 +99,7 @@ class requestsList extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            Navigator.pushNamed(context, '/bookingDetails');
+            Navigator.pushNamed(context, '/bookingDetails',arguments: [this.request,this.arena]);
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5.0),

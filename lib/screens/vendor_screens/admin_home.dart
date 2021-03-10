@@ -1,8 +1,6 @@
 import 'package:Yalla7agz/screens/my_account_page.dart';
 import 'package:Yalla7agz/screens/vendor_screens/admin_home_page.dart';
-import 'package:Yalla7agz/screens/vendor_screens/admin_reports.dart';
 import 'package:Yalla7agz/screens/vendor_screens/admin_requests.dart';
-import 'package:Yalla7agz/screens/vendor_screens/admin_today_calendar.dart';
 import 'package:flutter/material.dart';
 
 class adminHome extends StatefulWidget {
@@ -20,15 +18,9 @@ class _adminHomeState extends State<adminHome> {
         return adminHomePage();
         break;
       case 1:
-        return adminCalendar();
-        break;
-      case 2:
         return adminRequests();
         break;
-      case 3:
-        return adminReports();
-        break;
-      case 4:
+      case 2:
         return myAccount();
         break;
     }
@@ -78,10 +70,6 @@ class _adminHomeState extends State<adminHome> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today_outlined),
-            label: 'Today',
-          ),
-          BottomNavigationBarItem(
             icon: new Stack(
                 children: <Widget>[
                   new Icon(Icons.file_copy),
@@ -94,10 +82,6 @@ class _adminHomeState extends State<adminHome> {
                 ]
             ),
             label: 'Requests',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics_outlined),
-            label: 'Reports',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),

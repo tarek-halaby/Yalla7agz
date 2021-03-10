@@ -19,6 +19,7 @@ class addArena extends StatefulWidget {
 class _addArenaState extends State<addArena> {
   final _addArenaFormKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
+  final mobileController = TextEditingController();
   final countryController = TextEditingController();
   final cityController = TextEditingController();
   final regionController = TextEditingController();
@@ -31,6 +32,7 @@ class _addArenaState extends State<addArena> {
     nameController.dispose();
     countryController.dispose();
     cityController.dispose();
+    mobileController.dispose();
     regionController.dispose();
   }
   @override
@@ -125,6 +127,42 @@ class _addArenaState extends State<addArena> {
                                   },
                                   decoration: new InputDecoration(
                                     hintText: 'Your arena name',
+                                  ),
+                                  autofocus: false,
+                                ),
+                              ),
+                              SizedBox(
+                                height: _height * 0.025,
+                              ),
+                              new Container(
+                                width: _width * 0.87,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Arena Mobile: ",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.red),
+                                ),
+                              ),
+
+                              Container(
+                                width:_width*0.87,
+                                child: TextFormField(
+
+                                  textInputAction: TextInputAction.next,
+                                  controller: mobileController,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return "* Please enter your Arena number";
+                                    }
+                                    return null;
+                                  },
+                                  decoration: new InputDecoration(
+                                    hintText: 'Your arena number',
                                   ),
                                   autofocus: false,
                                 ),
@@ -348,13 +386,14 @@ class _addArenaState extends State<addArena> {
                                       await Provider.of<Arenas>(context, listen: false)
                                           .addArena(
                                         nameController.text,
+                                        mobileController.text,
                                         countryController.text,
                                         cityController.text,
                                         regionController.text,
                                         lat,
                                         long
                                       ).whenComplete(() async{
-                                        await Provider.of<Arenas>(context,listen: false).getArenas();                                        DialogBuilder(context).hideOpenDialog();
+                                        await Provider.of<Arenas>(context,listen: false).getArenas(true);                                        DialogBuilder(context).hideOpenDialog();
                                         Navigator.pop(context);
                                       }).catchError((error) {
                                         var errorMessage = 'Adding Failed';

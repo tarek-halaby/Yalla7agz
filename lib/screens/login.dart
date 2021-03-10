@@ -5,7 +5,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/screens/signup.dart';
 import 'package:Yalla7agz/providers/auth.dart';
-import 'package:Yalla7agz/screens/client_screens/home.dart';
 import 'package:Yalla7agz/widgets/loading_indicator.dart';
 import 'package:Yalla7agz/widgets/loading_indicator.dart';
 import 'package:Yalla7agz/models/http_exception.dart';
@@ -31,7 +30,7 @@ class LoginStatefulWidget extends StatefulWidget {
 class LoginStatefulWidgetState extends State<LoginStatefulWidget> {
   bool _passwordVisible;
   final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController(text: "admin@miu.com");
+  final emailController = TextEditingController(text: "client@miu.com");
   final passowrdController = TextEditingController(text: "12345678");
   var _isLoading = false;
 

@@ -1,34 +1,42 @@
+import 'package:Yalla7agz/models/arena.dart';
+import 'package:Yalla7agz/models/request.dart';
+import 'package:Yalla7agz/providers/arenas.dart';
+import 'package:Yalla7agz/providers/requests.dart';
+import 'package:Yalla7agz/widgets/loading_indicator.dart';
+import 'package:Yalla7agz/widgets/message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:Yalla7agz/models/court.dart';
-final List<String> response = ["Pending", "Cancelled", "Approved"];
-final List<Color> responseColor = [
-  Colors.blueAccent,
-  Colors.black,
-  Colors.green
-];
-class adminRequests extends StatelessWidget {
-  final List<Courts> items = [
-    Courts("Court 1", "7:00 PM", "8:00 PM"),
-    Courts("Court 2", "7:00 PM", "8:00 PM"),
-    Courts("Court 3", "7:00 PM", "8:00 PM"),
-    Courts("Court 4", "7:00 PM", "8:00 PM"),
-    Courts("Court 5", "7:00 PM", "8:00 PM"),
-    Courts("Court 6", "7:00 PM", "8:00 PM"),
-    Courts("Court 7", "12:00 PM", "8:00 PM"),
-    Courts("Court 8", "7:00 PM", "8:00 PM"),
-    Courts("Court 9", "7:00 PM", "8:00 PM"),
-    Courts("Court 10", "7:00 PM", "8:00 PM"),
-    Courts("Court 11", "7:00 PM", "8:00 PM"),
-    Courts("Court 12", "7:00 PM", "8:00 PM")
-  ];
+import 'package:provider/provider.dart';
 
+class adminRequests extends StatelessWidget {
+  List<Request> _requests = new List<Request>();
+  List<Arena> _arenas = new List<Arena>();
+
+  _refreshRequests(BuildContext context) async {
+    await Provider.of<Arenas>(context, listen: false).getArenas(true);
+    this._arenas = await Provider.of<Arenas>(context, listen: false).arenas;
+    await Provider.of<Requests>(context, listen: false).getAdminRequests(this._arenas);
+    this._requests = await Provider.of<Requests>(context, listen: false).requests;
+
+  }
 
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
-    return Container(
+    return FutureBuilder<Object>(
+        future: _refreshRequests(context),
+    builder: (context, snapshot) {
+    return snapshot.connectionState == ConnectionState.waiting
+    ? Center(
+    child: CircularProgressIndicator(),
+    )
+        : RefreshIndicator(
+    onRefresh: () => _refreshRequests(context),
+    child: Consumer<Requests>(
+    builder: (context, arenaData, child) =>
+    Container(
         width: _width * 0.87,
         margin: EdgeInsets.only(top: _height * 0.04, bottom: _height * 0.03),
         child: Column(children: <Widget>[
@@ -54,30 +62,34 @@ class adminRequests extends StatelessWidget {
           ),
           new Flexible(
               child: ListView.builder(
-                  itemCount: items.length,
+                  itemCount: _requests.length,
                   itemBuilder: (context, index) {
                     return requestsList(
-                      place: "${items[index].getPlace()}",
-                      time: "${items[index].getFrom()}" +
+                      requestId: _requests[index].id,
+                      place: "${_arenas[_arenas.indexWhere((element) => element.id==_requests[index].userBooking.arenaId)].name}",
+                      time: "${_requests[index].userBooking.from}" +
                           " - " +
-                          "${items[index].getTo()}",
-                      index: index%3,
+                          "${_requests[index].userBooking.to}",
+                      response: "${_requests[index].status}",
                     );
                   }))
-        ]));
-  }
+        ]))));
+  });
+}
 }
 
 class requestsList extends StatelessWidget {
   requestsList({
     this.place,
     this.time,
-    this.index,
+    this.response,
+    this.requestId,
   });
 
+  final String requestId;
   final String place;
   final String time;
-  final int index;
+  final String response;
 
   @override
   Widget build(BuildContext context) {
@@ -90,8 +102,6 @@ class requestsList extends StatelessWidget {
         height:height ,
         child:Card(
         child:InkWell(
-          onTap: () {
-          },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5.0),
             child: Row(
@@ -113,9 +123,9 @@ class requestsList extends StatelessWidget {
                           time,
                           style: TextStyle(fontSize: 13),
                         ))),
-                Expanded(
+                response=='Pending'?Expanded(
                   flex: 4,
-                  child: Center(child: index%3==0?
+                  child: Center(child:
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -127,7 +137,17 @@ class requestsList extends StatelessWidget {
                               child: InkWell(
                                 splashColor: Colors.green[900], // inkwell color
                                 child: SizedBox(width: height/2, height: height/2, child: Icon(Icons.check,color: Colors.white)),
-                                onTap: () {
+                                onTap: () async{
+                                  DialogBuilder(context).showLoadingIndicator('Loading');
+                                  await Provider.of<Requests>(context, listen: false)
+                                      .respondRequest(true,requestId
+                                  ).whenComplete(() async{
+                                    DialogBuilder(context).hideOpenDialog();
+                                    Navigator.pop(context);
+                                  }).catchError((error) {
+                                    var errorMessage = 'Adding Failed';
+                                    MessageBoxModal(context).showMessageBoxModal(errorMessage);
+                                  });
                                 },
                               ),
                             ),
@@ -139,20 +159,25 @@ class requestsList extends StatelessWidget {
                               child: InkWell(
                                 splashColor: Colors.red[900], // inkwell color
                                 child: SizedBox(width: height/2, height: height/2, child: Icon(Icons.clear,color: Colors.white,)),
-                                onTap: () {
+                                onTap: () async{
+                                  DialogBuilder(context).showLoadingIndicator('Loading');
+                                  await Provider.of<Requests>(context, listen: false)
+                                      .respondRequest(false,requestId
+                                  ).whenComplete(() async{
+                                    DialogBuilder(context).hideOpenDialog();
+                                  }).catchError((error) {
+                                    var errorMessage = 'Adding Failed';
+                                    MessageBoxModal(context).showMessageBoxModal(errorMessage);
+                                  });
                                 },
                               ),
                             ),
                           ),
                         ],
-                      ):Text(
-                    "${response[index % 3]}",
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: responseColor[index % 3],
-                      fontWeight: FontWeight.bold
-                    ),
-                  )),
+                      )),
+                ):Expanded(
+                  flex: 4,
+                  child: Text(response),
                 )
               ],
             ),

@@ -1,7 +1,12 @@
+import 'package:Yalla7agz/models/arena.dart';
+import 'package:Yalla7agz/providers/requests.dart';
 import 'package:Yalla7agz/screens/client_screens/booked.dart';
 import 'package:Yalla7agz/screens/client_screens/notifications.dart';
+import 'package:Yalla7agz/widgets/loading_indicator.dart';
+import 'package:Yalla7agz/widgets/message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/widgets/painted_line.dart';
+import 'package:provider/provider.dart';
 
 class bookingStatefulWidget extends StatefulWidget {
   bookingStatefulWidget({Key key}) : super(key: key);
@@ -20,6 +25,9 @@ class booking extends State<bookingStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final Ids =
+    ModalRoute.of(context).settings.arguments as List;
+    Arena arena=Ids[0];
     double _height = MediaQuery
         .of(context)
         .size
@@ -89,7 +97,7 @@ class booking extends State<bookingStatefulWidget> {
                       child: Container(
                         child: Center(
                             child: Text(
-                              "el wafaa wel amal",
+                              arena.name,
                               style: TextStyle(fontSize: 15),
                             )),
                       ),
@@ -114,7 +122,7 @@ class booking extends State<bookingStatefulWidget> {
                       child: Container(
                         child: Center(
                             child: Text(
-                              "1",
+                              arena.courts[Ids[1]].number,
                               style: TextStyle(fontSize: 15),
                             )),
                       ),
@@ -413,7 +421,7 @@ class booking extends State<bookingStatefulWidget> {
                       child: Container(
                         child: Center(
                             child: Text(
-                              "150",
+                              arena.courts[Ids[1]].pricePerHour,
                               style: TextStyle(fontSize: 15),
                             )),
                       ),
@@ -427,10 +435,19 @@ class booking extends State<bookingStatefulWidget> {
                     thickness: 1,
                   ),
                   InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(
-                            context,
-                            '/booked');
+                      onTap: () async{
+                        DialogBuilder(context).showLoadingIndicator('Loading');
+                        await Provider.of<Requests>(context, listen: false)
+                            .book(arena.id,arena.courts[Ids[1]].id,arena.courts[Ids[1]].pricePerHour,this._dateText,this._fromtimeText,this._totimeText).whenComplete(() async{
+//                          await Provider.of<Requests>(context,listen: false).getArenas(true);                                        DialogBuilder(context).hideOpenDialog();
+                          Navigator.pushNamed(
+                              context,
+                              '/booked');
+                        }).catchError((error) {
+                          var errorMessage = 'Adding Failed';
+                          MessageBoxModal(context).showMessageBoxModal(errorMessage);
+                        });
+
                       },
 
                       child:Padding(

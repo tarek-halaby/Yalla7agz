@@ -30,8 +30,8 @@ class Arenas with ChangeNotifier {
   set arena(Arena value) {
     _arena = value;
   }
-  Future<void> addArena(name,country,city,region,lat,long)async{
-    Arena arena=new Arena(name,ownerId:this.userId,country:Country(country,city:City(city,region:Region(region,address: Address(lat,long)))));
+  Future<void> addArena(name,mobile,country,city,region,lat,long)async{
+    Arena arena=new Arena(name,mobile,ownerId:this.userId,country:Country(country,city:City(city,region:Region(region,address: Address(lat,long)))));
     String url="https://yalla7agz-default-rtdb.firebaseio.com/arenas.json?auth=$authToken";
     final response=await http.post(url,
         body: arena.toJson());
@@ -68,6 +68,7 @@ class Arenas with ChangeNotifier {
       final List<Court> loadedCourts = [];
       extractedData.forEach((courtId, courtData) {
         Court court=new Court(courtData['number'],courtData['pricePerHour'],id: courtId,courtType: CourtType(courtData['courtType']['type'],courtData['courtType']['maxPlayers']));
+        court.id=courtId;
         loadedCourts.add(court);
       });
         this._arenas[arenaIndex].courts=loadedCourts;
@@ -76,8 +77,8 @@ class Arenas with ChangeNotifier {
       throw (error);
     }
   }
-   getArenas()async {
-    final filterString ='orderBy="ownerId"&equalTo="$userId"';
+   getArenas(bool filter)async {
+    final filterString =filter?'orderBy="ownerId"&equalTo="$userId"':"";
 
     var url = 'https://yalla7agz-default-rtdb.firebaseio.com/arenas.json?auth=$authToken&$filterString';
     try {
@@ -93,7 +94,7 @@ class Arenas with ChangeNotifier {
         Region region=new Region(arenaData['country']['city']['region']['name'],address: address);
         City city=new City(arenaData['country']['city']['name'],region: region);
         Country country=new Country(arenaData['country']['name'],city:city);
-        Arena arena=new Arena(arenaData['name'],id: arenaId.toString(),country: country,);
+        Arena arena=new Arena(arenaData['name'],arenaData['mobile'],id: arenaId.toString(),country: country,);
         arena.id=arenaId;
         loadedArenas.add(arena);
       });

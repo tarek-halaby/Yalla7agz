@@ -1,10 +1,19 @@
+import 'package:Yalla7agz/models/arena.dart';
+import 'package:Yalla7agz/models/request.dart';
+import 'package:Yalla7agz/providers/requests.dart';
+import 'package:Yalla7agz/widgets/loading_indicator.dart';
+import 'package:Yalla7agz/widgets/message_widget.dart';
 import 'package:Yalla7agz/widgets/painted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:map_launcher/map_launcher.dart';
-
+import 'package:provider/provider.dart';
 class bookingDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final args =
+    ModalRoute.of(context).settings.arguments as List;
+    final Request request=args[0];
+    final Arena arena=args[1];
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -64,7 +73,7 @@ class bookingDetails extends StatelessWidget {
                       flex: 10,
                       child: Container(
                         child: Text(
-                          "#37892",
+                          request.id,
                           style: TextStyle(fontSize: 15),
                         ),
                       ),
@@ -88,7 +97,7 @@ class bookingDetails extends StatelessWidget {
                       flex: 10,
                       child: Container(
                         child: Text(
-                          "Pending",
+                          request.status,
                           style:
                               TextStyle(fontSize: 15, color: Colors.blueAccent),
                         ),
@@ -113,7 +122,7 @@ class bookingDetails extends StatelessWidget {
                       flex: 8,
                       child: Container(
                         child: Text(
-                          "el wafaa wel amal",
+                          arena.name,
                           style: TextStyle(fontSize: 15),
                         ),
                       ),
@@ -131,11 +140,10 @@ class bookingDetails extends StatelessWidget {
                                 child: Icon(
                                   Icons.location_on,
                                 )),
-                            onTap: () async {
-                              final availableMaps =
-                                  await MapLauncher.installedMaps;
+                            onTap: () async{
+                              final availableMaps = await MapLauncher.installedMaps;
                               await availableMaps.first.showMarker(
-                                coords: Coords(30.169846, 31.490351),
+                                coords: Coords(double.parse(arena.country.city.region.address.long), double.parse(arena.country.city.region.address.lat)),
                                 title: "Ocean Beach",
                               );
                             },
@@ -147,51 +155,7 @@ class bookingDetails extends StatelessWidget {
                   SizedBox(
                     height: _height * 0.015,
                   ),
-                  Row(children: <Widget>[
-                    Expanded(
-                      flex: 5,
-                      child: Container(
-                        child: Text(
-                          "Court number: ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 10,
-                      child: Container(
-                        child: Text(
-                          "2",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                      ),
-                    ),
-                  ]),
-                  SizedBox(
-                    height: _height * 0.025,
-                  ),
-                  Row(children: <Widget>[
-                    Expanded(
-                      flex: 5,
-                      child: Container(
-                        child: Text(
-                          "Court type: ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 10,
-                      child: Container(
-                        child: Text(
-                          "5 v 5",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                      ),
-                    ),
-                  ]),
+
                   SizedBox(
                     height: _height * 0.025,
                   ),
@@ -210,7 +174,7 @@ class bookingDetails extends StatelessWidget {
                       flex: 10,
                       child: Container(
                         child: Text(
-                          DateTime.now().toIso8601String().split('T').first,
+                          request.userBooking.date,
                           style: TextStyle(fontSize: 15),
                         ),
                       ),
@@ -234,7 +198,7 @@ class bookingDetails extends StatelessWidget {
                       flex: 10,
                       child: Container(
                         child: Text(
-                          "7:00 PM",
+                          request.userBooking.from,
                           style: TextStyle(fontSize: 15),
                         ),
                       ),
@@ -258,7 +222,7 @@ class bookingDetails extends StatelessWidget {
                       flex: 10,
                       child: Container(
                         child: Text(
-                          "8:00 PM",
+                          request.userBooking.to,
                           style: TextStyle(fontSize: 15),
                         ),
                       ),
@@ -282,7 +246,7 @@ class bookingDetails extends StatelessWidget {
                       flex: 10,
                       child: Container(
                         child: Text(
-                          "150 L.E",
+                          request.userBooking.totalPrice,
                           style: TextStyle(fontSize: 15),
                         ),
                       ),
@@ -293,20 +257,27 @@ class bookingDetails extends StatelessWidget {
                     thickness: 1,
                   ),
                   InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
+                      onTap: () async{
+                        DialogBuilder(context).showLoadingIndicator('Loading');
+                        await Provider.of<Requests>(context, listen: false)
+                            .cancelReq(request.id
+                        ).whenComplete(() async{
+                          await Provider.of<Requests>(context,listen: false).getRequests();
+                          DialogBuilder(context).hideOpenDialog();
+                          Navigator.pop(context);
+                        }).catchError((error) {
+                          var errorMessage = 'Adding Failed';
+                          MessageBoxModal(context).showMessageBoxModal(errorMessage);
+                        });
                       },
-                      child: Padding(
+
+                      child:Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5.0),
-                          child: Center(
-                            child: Text(
-                              "Cancel Request",
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red),
-                            ),
-                          ))),
+                          child:Center(
+                            child: Text("Cancel Request",style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,color: Colors.red),),
+                          ))
+
+                  ),
                   new Divider(
                     color: Colors.black12,
                     thickness: 1,

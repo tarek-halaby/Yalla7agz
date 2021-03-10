@@ -2,7 +2,6 @@ import 'package:Yalla7agz/controllers/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:Yalla7agz/screens/login.dart';
 import 'package:Yalla7agz/models/user.dart';
-import 'package:Yalla7agz/screens/client_screens/home_page.dart';
 import 'package:Yalla7agz/screens/client_screens/my_requests_page.dart';
 import 'package:Yalla7agz/screens/my_account_page.dart';
 import 'package:Yalla7agz/screens/client_screens/book_now_page.dart';
@@ -32,17 +31,15 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
   Widget body() {
     switch(_selectedIndex) {
       case 0:
-        return homePage(showMoreButton);
+        return HomePage();
         break;
       case 1:
-        return bookNowPage();
-        break;
-      case 2:
         return myRequests();
         break;
-      case 3:
+      case 2:
         return myAccount();
         break;
+
     }
   }
   void _onItemTapped(int index) {
@@ -50,11 +47,7 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
       _selectedIndex = index;
     });
   }
-  void showMoreButton() {
-    setState(() {
-      _selectedIndex = 1;
-    });
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,10 +90,7 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today_outlined),
-            label: 'Book Now',
-          ),
+          
           BottomNavigationBarItem(
             icon: Icon(Icons.file_copy),
             label: 'My Requests',
